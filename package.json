@@ -7,9 +7,6 @@
     "start": "node index.js"
   },
   "author": "",
-  "engines": {
-    "node": "18.7.0"
-  },
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
