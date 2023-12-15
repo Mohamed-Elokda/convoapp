@@ -109,7 +109,7 @@ exports.createAudioMessage = asyncHandler(async (req, res) => {
 const admin = require('firebase-admin');
 // Initialize Firebase Admin SDK with your service account credentials
 admin.initializeApp({
-  credential: admin.credential.cert("../server/ghaza-82ac0-firebase-adminsdk-mhg2h-bdcf44c487.json"),
+  credential: admin.credential.cert("./ghaza-82ac0-firebase-adminsdk-mhg2h-bdcf44c487.json"),
   // Add your own configuration options as needed
 });
 
