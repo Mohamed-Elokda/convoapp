@@ -47,7 +47,6 @@ exports.getMyConversation = asyncHandler(async (req, res) => {
       };
     });
     conversationData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-    console.log(conversationData)
     // Return the conversation data in the JSON response
     res.json(conversationData);
   } else {

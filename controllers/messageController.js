@@ -116,10 +116,16 @@ exports.createAudioMessage = asyncHandler(async (req, res) => {
 }
 )
 
+const admin = require('firebase-admin');
+// Initialize Firebase Admin SDK with your service account credentials
+admin.initializeApp({
+  credential: admin.credential.cert("../server/ghaza-82ac0-firebase-adminsdk-mhg2h-bdcf44c487.json"),
+  // Add your own configuration options as needed
+});
 
 exports.createMessage = asyncHandler(async (req, res) => {
-  const user1 = req.decoded.user_id
-  const user2 = req.body.receiver_id
+  const user1 = req.decoded.user_id;
+  const user2 = req.body.receiver_id;
   var conversationId;
   const existingConversation = await conversationModel.findOne({ member: { $all: [user1, user2] } })
 
@@ -131,39 +137,58 @@ exports.createMessage = asyncHandler(async (req, res) => {
     const newConversation = conversationModel({
       member: [user1, user2],
       lastMessage: req.body.text,
-
     })
 
     const saveConversation = await newConversation.save()
     conversationId = saveConversation._id
-
   }
 
-
   const new_message = messageModel({
-
     conversation_id: conversationId,
     sender_id: req.decoded.user_id,
     receiver_id: req.body.receiver_id,
     text: req.body.text,
     type: "text"
   });
-  const result = await new_message.save()
-  // instead of a document.
+
+  const result = await new_message.save();
+
+  // Get the FCM token of the receiver from your user model
+  const receiverFCMToken = req.body.notificationToken;
+
+  // Send FCM notification
+  const payload = {
+    notification: {
+      title: req.body.userName,
+      body: req.body.text,
+      // Add any other notification options you want
+    },
+    data: {
+      conversation_id: conversationId.toString(),
+      sender_id: req.decoded.user_id.toString(),
+      receiver_id: req.body.receiver_id.toString(),
+      text: req.body.text,
+      type: "text"
+    },
+  };
+
+  const noti = await admin.messaging().sendToDevice(receiverFCMToken, payload);
+  console.log(noti.results[0])
+
+  // Instead of a document.
   const populatedResult = await messageModel.findById(result._id)
-    .populate('sender_id') // Replace 'sender_id' with the field you want to populate
+    .populate('sender_id'); // Replace 'sender_id' with the field you want to populate
 
 
-
+  // Assuming you have a socket object available globally
+  // Modify this according to your socket setup
+  socket.socket.emit(req.body.receiver_id, populatedResult);
+  socket.socket.emit("chat message", populatedResult);
+  socket.socket.emit("lastMessage", { "id": req.body.receiver_id });
   res.json(populatedResult);
 
-  socket.socket.emit(req.body.receiver_id, populatedResult)
-  socket.socket.emit("chat message", populatedResult)
+});
 
-  socket.socket.emit("lastMessage", { "id": req.body.receiver_id });
-
-
-})
 exports.getMessage = asyncHandler(async (req, res) => {
   const conversationId = req.params.conversationId;
 
@@ -178,7 +203,6 @@ exports.getMessage = asyncHandler(async (req, res) => {
       .populate('sender_id', null, { receiver_id: { $ne: null } })
       .exec();
 
-    console.log(messages)
 
 
     return res.status(200).json(messages);
@@ -195,7 +219,6 @@ exports.getMessage = asyncHandler(async (req, res) => {
     .populate('sender_id', null, { receiver_id: { $ne: null } })
     .exec();
 
-  console.log(messages)
 
 
   return res.status(200).json(messages);
@@ -245,8 +268,7 @@ exports.getAllMessage = asyncHandler(async (req, res) => {
     .exec();;
 
 
-  console.log(id)
-  console.log({ messages })
+
 
   return res.status(200).json(messages);
 })

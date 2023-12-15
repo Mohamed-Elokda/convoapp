@@ -4,15 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "start": "node index.js"
   },
   "author": "",
+  "engines": {
+    "node": "20.7.0"
+  },
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fcm-node": "^1.6.1",
+    "firebase-admin": "^12.0.0",
     "image-thumbnail": "^1.0.15",
     "mongodb": "^2.2.12",
     "mongoose": "^8.0.0",

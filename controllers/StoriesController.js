@@ -54,11 +54,9 @@ exports.getStory = expressAsyncHandler(async (req, res) => {
         // Filter out users with no stories
         const filteredUserStories = allUserStories.filter(user => user.stories.length !== 0);
 
-        console.log({ users: filteredUserStories });
 
         res.json({ users: filteredUserStories });
     } catch (error) {
-        console.log(error);
         res.status(500).send('Internal Server Error');
     }
 });
@@ -72,7 +70,6 @@ exports.getMyStory = expressAsyncHandler(async (req, res) => {
     try {
 
         const userStories = await StoriesModel.find({ user: req.decoded.user_id }).exec();
-        console.log(userStories)
         res.json(userStories);
     } catch (error) {
         res.status(500).send('Internal Server Error');
@@ -83,7 +80,6 @@ exports.addStoryView = expressAsyncHandler(async (req, res) => {
     try {
         // Check if the user has already viewed the story
         const isView = await StoryView.findOne({ userID: req.decoded.user_id.toString(), storyID: req.params.storyID });
-        console.log(isView)
 
         if (!isView) {
             // If the user has not viewed the story, add a view
@@ -92,12 +88,10 @@ exports.addStoryView = expressAsyncHandler(async (req, res) => {
                 storyID: req.params.storyID
             });
 
-            console.log("View added");
             res.json("View added");
         } else {
             // If the user has already viewed the story, you may choose to handle this case differently.
             // For example, you could return a message indicating that the user has already viewed the story.
-            console.log("User has already viewed this story");
             res.json("User has already viewed this story");
         }
 
@@ -114,7 +108,6 @@ exports.getStoryViews = expressAsyncHandler(async (req, res) => {
 
         const users = storyViews.map((view) => view.userID);
 
-        console.log(users);
 
         res.json({ viewsSize: storyViews.length, users: users });
     } catch (error) {

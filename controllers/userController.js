@@ -72,7 +72,6 @@ exports.signup = asyncHandler(async (req, res) => {
       notificationToken: req.body.notificationToken
 
     })
-    console.log(req.body.notificationToken)
 
     var token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET_KEY);
 
@@ -135,7 +134,6 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
 
   const filteredRequests = requests.filter(result => result._id.toString() !== req.decoded.user_id);
 
-  console.log(filteredRequests);
   return res.status(200).json(filteredRequests);
 });
 
