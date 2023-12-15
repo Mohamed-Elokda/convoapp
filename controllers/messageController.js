@@ -106,12 +106,12 @@ exports.createAudioMessage = asyncHandler(async (req, res) => {
 }
 )
 
-const admin = require('firebase-admin');
+/*const admin = require('firebase-admin');
 // Initialize Firebase Admin SDK with your service account credentials
 admin.initializeApp({
   credential: admin.credential.cert("./ghaza-82ac0-firebase-adminsdk-mhg2h-bdcf44c487.json"),
   // Add your own configuration options as needed
-});
+});*/
 
 exports.createMessage = asyncHandler(async (req, res) => {
   const user1 = req.decoded.user_id;
@@ -146,7 +146,8 @@ exports.createMessage = asyncHandler(async (req, res) => {
   // Get the FCM token of the receiver from your user model
   const receiverFCMToken = req.body.notificationToken;
 
-  // Send FCM notification
+  /**
+   * // Send FCM notification
   const payload = {
     notification: {
       title: req.body.userName,
@@ -164,6 +165,7 @@ exports.createMessage = asyncHandler(async (req, res) => {
 
   const noti = await admin.messaging().sendToDevice(receiverFCMToken, payload);
   console.log(noti.results[0])
+   */
 
   // Instead of a document.
   const populatedResult = await messageModel.findById(result._id)
