@@ -1,20 +1,10 @@
 const messageModel = require("../models/messageModel")
 const asyncHandler = require('express-async-handler');
 const conversationModel = require("../models/conversationModel")
-const http = require('http');
-const express = require('express');
-const socketIO = require('socket.io');
-const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
 const socket = require('../index');
-const jwt = require('jsonwebtoken');
-const sharp = require("sharp");
-const path = require('path'); // Import the path module
 
 var FCM = require('fcm-node');
 
-var serverKey = 'AAAA80ajG-I:APA91bF_jPzxZmgcUEUDpwjM_bD0S0KcS2jqdWEFGHJ6yNTlm5HgDyjG6K-a43rWR0PCfOKuNkXM5jDPHwrlMFXXTzZdDOKjjTK6W0c-Ci60ub-kfdqDz-tVrqSUuDeoK6yWWXXnnb3-'; //put your server key here
 exports.createMessageImage = asyncHandler(async (req, res) => {
   const user1 = req.decoded.user_id;
   const user2 = req.body.receiver_id;
